@@ -1,13 +1,54 @@
 import customtkinter as ctk
+import threading
+from tkinter import filedialog
+from sort import sort_my_files
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
 
+# Настройка окна
 app = ctk.CTk()
 app.title("MySorter")
 app.geometry("800x600")
 app.resizable(width=False, height=False)
+app.iconbitmap("icon.ico")
 
+# Функция для кнопки старт
+def start_sort():
+    folder_from = folder_entry.get().strip()
+    folder_to = output_folder_entry.get().strip()
+    start_button.configure(state="disabled")
+    progress.set(0)
+    progress_label.configure(text="0%")
+    threading.Thread(
+        target=sort_my_files,
+        args=(folder_from, folder_to, log_label, progress, progress_label),
+        daemon=True,
+        name="sorter"
+    ).start()
+    check_thread()
+
+# Проверка что поток завершен
+def check_thread():
+    if any(t.name == "sorter" and t.is_alive() for t in threading.enumerate()):
+        app.after(200, check_thread)
+    else:
+        start_button.configure(state="normal")
+    
+# Функция для выбора папки с обзором
+def browse_from():
+    path = filedialog.askdirectory()
+    if path:
+        folder_entry.delete(0, "end")
+        folder_entry.insert(0, path)
+
+# Функция для выбора папки вывода с обзором
+def browse_to():
+    path = filedialog.askdirectory()
+    if path:
+        output_folder_entry.delete(0, "end")
+        output_folder_entry.insert(0, path)
+        
 # Заголовок
 title_label = ctk.CTkLabel(
     master=app,
@@ -85,9 +126,16 @@ start_button = ctk.CTkButton(
     height=32,
     border_width=0,
     corner_radius=8,
-    hover=True
+    hover=True,
+    command=start_sort
 )
 start_button.place(x=20, y=500)
+
+# Кнокпи обзора
+browse_from_button = ctk.CTkButton(app, text="...", width=40, command=browse_from)
+browse_from_button.place(x=390, y=160)
+browse_to_button = ctk.CTkButton(app, text="...", width=40, command=browse_to)
+browse_to_button.place(x=390, y=260)
 
 # Прогресс бар
 progress = ctk.CTkProgressBar(
