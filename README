@@ -28,13 +28,7 @@
     git clone https://github.com/skrizzz-dev/MySorter.git
     ```
 
-2. Перейдите в папку проекта:
-   
-   ```bash
-    git clone https://github.com/skrizzz-dev/MySorter.git
-    ```
-
-3. Создайте и активируйте виртуальное окружение:
+2. Создайте и активируйте виртуальное окружение:
    
    Windows:
    ```bash
@@ -46,12 +40,12 @@
     python -m venv venv
     source venv/bin/activate
     ```
-4. Установите зависимости:
+3. Установите зависимости:
     ```bash
     pip install -r requirements.txt
     ```
 
-5. Запустите приложение:
+4. Запустите приложение:
    ```bash
    python main.py
    ```
